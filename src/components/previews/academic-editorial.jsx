@@ -1,4 +1,27 @@
-export default function AcademicEditorialPreview({ hidden, listStyle }) {
+import { NavigationIcon, SampleLists } from "../NavigationPreview.jsx";
+import { elementCss } from "../ElementSettings.jsx";
+import { componentCss } from "../ComponentSettings.jsx";
+import { shadowCss } from "../ShadowSettings.jsx";
+import PaletteEditor from "../PaletteEditor.jsx";
+import { FooterPreview, footerCss } from "../FooterSettings.jsx";
+import { TablePreview, tableCss } from "../TableSettings.jsx";
+
+export default function AcademicEditorialPreview({
+  hidden,
+  listStyle,
+  uiRef,
+  autoStyle,
+  layoutStyles,
+  paletteClass,
+  tableConfig,
+  footerConfig,
+  shadowConfig,
+  componentConfig,
+  showLists,
+  elementConfig,
+  componentTargets,
+  index,
+}) {
   return (
     <section
       className="direction"
@@ -14,8 +37,21 @@ export default function AcademicEditorialPreview({ hidden, listStyle }) {
         <span className="badge">HTML design preview</span>
       </div>
       <div className="frame">
-        <div className="ui editorial" style={listStyle}>
-          <aside className="nav">
+        <div
+          className={`ui editorial ${paletteClass}`}
+          style={listStyle}
+          ref={uiRef}
+          data-table-editor={index}
+          data-footer-editor={index}
+          data-shadow-editor={index}
+          data-component-editor={index}
+          data-element-editor={index}
+        >
+          <aside
+            className="nav"
+            style={layoutStyles.navigation}
+            data-editor-gap={layoutStyles.navigation.gap ? "" : undefined}
+          >
             <div className="brand">
               Rivermere
               <br />
@@ -24,17 +60,35 @@ export default function AcademicEditorialPreview({ hidden, listStyle }) {
               <small>School community</small>
             </div>
             <ul className="nav-list" aria-label="Preview navigation">
-              <li className="item active">⌂ &nbsp; Dashboard</li>
-              <li className="item">▤ &nbsp; Classes</li>
-              <li className="item">▢ &nbsp; Assignments</li>
-              <li className="item">◷ &nbsp; Calendar</li>
-              <li className="item">✉ &nbsp; Messages</li>
-              <li className="item">▧ &nbsp; Resources</li>
-              <li className="item">◎ &nbsp; Community</li>
+              <li className="item active">
+                <NavigationIcon index={0} /> Dashboard
+              </li>
+              <li className="item">
+                <NavigationIcon index={1} /> Classes
+              </li>
+              <li className="item">
+                <NavigationIcon index={2} /> Assignments
+              </li>
+              <li className="item">
+                <NavigationIcon index={3} /> Calendar
+              </li>
+              <li className="item">
+                <NavigationIcon index={4} /> Messages
+              </li>
+              <li className="item">
+                <NavigationIcon index={5} /> Resources
+              </li>
+              <li className="item">
+                <NavigationIcon index={6} /> Community
+              </li>
             </ul>
           </aside>
           <div className="ui-content">
-            <main className="main">
+            <main
+              className="main"
+              style={layoutStyles.main}
+              data-editor-gap={layoutStyles.main.gap ? "" : undefined}
+            >
               <div className="bar">
                 <span>School portal</span>
                 <span className="pill">Viewing as: Parent ▾</span>
@@ -43,23 +97,47 @@ export default function AcademicEditorialPreview({ hidden, listStyle }) {
               <p className="sub">
                 Stay connected with your child’s learning and school life.
               </p>
-              <div className="columns">
-                <section className="panel">
+              <div
+                className="columns"
+                style={layoutStyles.columns}
+                data-editor-gap={layoutStyles.columns.gap ? "" : undefined}
+              >
+                <section
+                  className="panel"
+                  style={layoutStyles.cards}
+                  data-editor-gap={layoutStyles.cards.gap ? "" : undefined}
+                >
                   <h4>Your child</h4>
-                  <div className="row">
+                  <div
+                    className="row"
+                    style={layoutStyles.rows}
+                    data-editor-gap={layoutStyles.rows.gap ? "" : undefined}
+                  >
                     <strong>Avery Chen · Grade 10</strong>
                     <small>›</small>
                   </div>
-                  <div className="row">
+                  <div
+                    className="row"
+                    style={layoutStyles.rows}
+                    data-editor-gap={layoutStyles.rows.gap ? "" : undefined}
+                  >
                     <strong>Academics</strong>
                     <small>›</small>
                   </div>
-                  <div className="row">
+                  <div
+                    className="row"
+                    style={layoutStyles.rows}
+                    data-editor-gap={layoutStyles.rows.gap ? "" : undefined}
+                  >
                     <strong>Teacher updates</strong>
                     <small>›</small>
                   </div>
                 </section>
-                <section className="panel">
+                <section
+                  className="panel"
+                  style={layoutStyles.cards}
+                  data-editor-gap={layoutStyles.cards.gap ? "" : undefined}
+                >
                   <span className="chip">Upcoming event</span>
                   <h4 style={{ marginTop: "16px", fontSize: "1.15rem" }}>
                     Winter choir concert
@@ -68,21 +146,37 @@ export default function AcademicEditorialPreview({ hidden, listStyle }) {
                   <span className="cta">View details →</span>
                 </section>
               </div>
-              <div className="update">
+              <div
+                className="update"
+                style={layoutStyles.update}
+                data-editor-gap={layoutStyles.update.gap ? "" : undefined}
+              >
                 <strong>Teacher update</strong>
                 <br />
                 Avery’s essay draft shows strong ideas. View feedback for the
                 next step.
               </div>
-              <div className="links">
+              <div
+                className="links"
+                style={layoutStyles.links}
+                data-editor-gap={layoutStyles.links.gap ? "" : undefined}
+              >
                 <span>My schedule →</span>
                 <span>School calendar →</span>
                 <span>Learning resources →</span>
               </div>
+              <TablePreview config={tableConfig} />
+              <SampleLists visible={showLists} />
             </main>
+            <FooterPreview config={footerConfig} />
           </div>
         </div>
       </div>
+      <PaletteEditor
+        index={index}
+        autoStyle={autoStyle}
+        componentTargets={componentTargets}
+      />
       <div className="palette">
         <span style={{ width: "100%", fontWeight: "700", color: "#53645d" }}>
           Original design palette
@@ -118,6 +212,21 @@ export default function AcademicEditorialPreview({ hidden, listStyle }) {
           #202D2A
         </div>
       </div>
+      <style className="element-style-rules">
+        {elementCss(index, elementConfig)}
+      </style>
+      <style className="component-style-rules">
+        {componentCss(index, componentConfig, componentTargets)}
+      </style>
+      <style className="shadow-style-rules">
+        {shadowCss(index, shadowConfig)}
+      </style>
+      <style className="footer-style-rules">
+        {footerCss(index, footerConfig)}
+      </style>
+      <style className="table-style-rules">
+        {tableCss(index, tableConfig)}
+      </style>
     </section>
   );
 }

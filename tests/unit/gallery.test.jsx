@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { LayoutContext } from "../../src/components/Playground.jsx";
@@ -20,8 +20,29 @@ Object.defineProperty(globalThis, "localStorage", {
 
 function Harness() {
   const [selected, setSelected] = useState(0);
+  const [colorsDisabled, setColorsDisabled] = useState(
+    () => localStorage.getItem("sheklei-disable-color-scheme-v1") === "true",
+  );
+  useEffect(() => {
+    document.body.classList.toggle("colors-disabled", colorsDisabled);
+    localStorage.setItem(
+      "sheklei-disable-color-scheme-v1",
+      String(colorsDisabled),
+    );
+  }, [colorsDisabled]);
   return (
-    <LayoutContext.Provider value={{ selected, setSelected }}>
+    <LayoutContext.Provider
+      value={{
+        selected,
+        setSelected,
+        colorsDisabled,
+        setColorsDisabled,
+        elementSettings: {},
+        headingColors: {},
+        palette: "original",
+        setPalette: () => {},
+      }}
+    >
       <GalleryControls />
     </LayoutContext.Provider>
   );

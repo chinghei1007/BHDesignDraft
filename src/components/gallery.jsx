@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { generateCss, downloadCss } from "../lib/css-export.js";
 import { useLayoutSelection } from "./Playground.jsx";
 
 export const layouts = [
@@ -23,28 +23,16 @@ export function wrapLayout(index) {
 }
 
 export function GalleryControls() {
-  const { selected, setSelected } = useLayoutSelection();
-  const [disabled, setDisabled] = useState(() => {
-    try {
-      return localStorage.getItem("sheklei-disable-color-scheme-v1") === "true";
-    } catch {
-      return false;
-    }
-  });
-  useEffect(() => {
-    document.body.classList.toggle("colors-disabled", disabled);
-    try {
-      localStorage.setItem("sheklei-disable-color-scheme-v1", String(disabled));
-    } catch {
-      /* Browser storage may be unavailable. */
-    }
-  }, [disabled]);
-  // Legacy editors still listen to the native layout change event.
-  useLayoutEffect(() => {
-    document
-      .getElementById("layout-select")
-      ?.dispatchEvent(new Event("change", { bubbles: false }));
-  }, [selected]);
+  const {
+    selected,
+    setSelected,
+    palette,
+    setPalette,
+    colorsDisabled,
+    setColorsDisabled,
+    elementSettings,
+    headingColors,
+  } = useLayoutSelection();
   const groups = [...new Set(layouts.map((layout) => layout.group))];
   return (
     <div className="gallery-controls" aria-label="Design gallery navigation">
@@ -88,7 +76,8 @@ export function GalleryControls() {
       <select
         id="palette-select"
         aria-label="Choose color palette"
-        defaultValue="original"
+        value={palette}
+        onChange={(event) => setPalette(event.target.value)}
       >
         <option value="original">Original for each design</option>
         <optgroup label="Soft and light">
@@ -112,11 +101,32 @@ export function GalleryControls() {
         <input
           type="checkbox"
           id="disable-color-scheme"
-          checked={disabled}
-          onChange={(event) => setDisabled(event.target.checked)}
+          checked={colorsDisabled}
+          onChange={(event) => setColorsDisabled(event.target.checked)}
         />
         Disable color scheme
       </label>
+      <button
+        type="button"
+        className="css-export"
+        onClick={() => {
+          const page = document.querySelectorAll(".direction")[selected];
+          downloadCss(
+            generateCss({
+              page,
+              colorsDisabled,
+              elementSettings: elementSettings[selected],
+              headingSettings: headingColors[selected],
+            }),
+          );
+        }}
+      >
+        Download App.css
+      </button>
+      <p className="css-export-help">
+        Exports a Tailwind v4 App.css with design tokens, shared styles and the
+        selected preview’s CSS.
+      </p>
     </div>
   );
 }

@@ -63,7 +63,13 @@ const definitions = [
 ];
 
 export default function ListSettings() {
-  const { selected, listSettings, setListSettings } = useLayoutSelection();
+  const {
+    selected,
+    listSettings,
+    setListSettings,
+    listVisibility,
+    setListVisibility,
+  } = useLayoutSelection();
   const current = listSettings[selected] || {};
   function update(name, value) {
     setListSettings((previous) => {
@@ -81,8 +87,18 @@ export default function ListSettings() {
         of the sidebar.
       </p>
       <label className="inline-toggle">
-        <input type="checkbox" id="show-sample-lists" defaultChecked /> Show
-        sample lists
+        <input
+          type="checkbox"
+          id="show-sample-lists"
+          checked={listVisibility[selected] !== false}
+          onChange={(event) =>
+            setListVisibility((previous) => ({
+              ...previous,
+              [selected]: event.target.checked,
+            }))
+          }
+        />{" "}
+        Show sample lists
       </label>
       <div className="list-fields">
         {definitions.map(([name, label, options]) => (
