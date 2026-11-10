@@ -1,62 +1,38 @@
 # School Design Playground
 
-A browser-based playground for comparing school dashboard designs, adjusting their visual styles, and exporting an `App.css` template. Open `index.html` directly in a modern browser; no installation is required. Open `tutorial.html` for an interactive guide.
+A browser-based playground for comparing 14 named school dashboard designs, adjusting their styles, and exporting a starting `App.css`.
 
-## Features
+## Development
 
-- Compare 14 named dashboard designs and switch between preset palettes or customize a design's colors.
-- Edit the typography scale and configure heading and text roles: font family, size, line height, padding, margin, and colors. Set spacing for all sides, horizontal or vertical pairs, or individual sides.
-- Adjust container spacing, border radius, and drop shadows. Configure buttons and navigation globally or per item, including an option to show or hide sidebar icons.
-- Preview unordered and ordered lists independently of navigation, with controls for markers, size, weight, padding, radius, and colors.
-- Enable a sample table and adjust its typography, cell spacing, borders, radius, and colors.
-- Customize a simple copyright footer or show an expanded example. The footer sits outside the main content container.
-- Disable the color scheme to focus on typography and layout. A miniature live preview appears above the settings when the main frame leaves the viewport; activate it to return to the full preview.
-- Save settings in the current browser, separately for each design. Reset controls restore their corresponding defaults.
+Requires Node.js 20.19+ or 22.12+ (as required by Vite 7).
 
-## Design and layout audit
+```sh
+npm ci
+npm run dev
+```
 
-The playground currently offers **14 named designs**, not 14 independent layouts. Each preview uses the same basic dashboard content and can use the same palette controls. A layout describes the placement and order of navigation and content; a design can also differ through typography, colors, sample role, and component styling. Palette choices and parent/teacher/student copy are not layouts.
+Open the URL printed by Vite. To check the production build locally:
 
-A useful target model is **three navigation arrangements** (sidebar, compact rail, horizontal bar), combined with **four content arrangements** (two-column, stacked, reordered focus, and resource-first), plus reusable palette, typography, card, row, and link styles. These are proposed building blocks, not a claim that the current editor already offers all combinations. Some responsive rules collapse columns on small screens. The table below reviews every existing option; the recommendations do not remove or merge the current previews or saved settings.
+```sh
+npm run build
+npm run preview
+```
 
-| Current design | What actually differs | Recommendation |
-| --- | --- | --- |
-| Academic Editorial | Standard sidebar and two-column dashboard, with serif type and sharper cards; parent copy. | Keep as an editorial typography/card preset on the standard layout. |
-| Learning Studio | Standard sidebar and two-column dashboard; teacher copy and indigo palette. | Palette and role-content preset, not a separate layout. |
-| Modern School Commons | Standard sidebar and two-column dashboard; student copy and navy/teal palette. | Palette and role-content preset on the standard layout. |
-| Soft School Commons | Same dashboard and student content as Modern School Commons, with a lighter palette and navigation treatment. | Merge into the standard layout as a palette/navigation style. |
-| Horizontal navigation | Moves navigation to a horizontal bar; otherwise uses the standard dashboard. | Keep as a navigation option, composable with content arrangements. |
-| Compact icon rail | Narrows the sidebar into an icon rail, with a responsive fallback. | Keep as a navigation option; check labels and accessibility when refining it. |
-| Split workspace | Two columns with a 1.6:1 ratio and a highlighted first panel. | Use a column-ratio and panel-style option on the two-column layout. |
-| Focus first | Stacks panels and reverses their order so the second panel comes first. | Keep as a stacked/reordered content arrangement. |
-| Card grid | Uses two columns with tinted, shadowed panels; the base already has two columns. | Card surface and shadow preset, not a separate layout. |
-| Daily agenda | Stacks panels in their original order and gives rows more vertical spacing. | Stacked content arrangement plus an agenda row-density preset. |
-| Classroom board | Uses two columns and turns rows into separate rounded white blocks. | Board-style row/card preset on the two-column layout; the markup is not a distinct kanban board. |
-| School magazine | Horizontal navigation with editorial typography and divider-like panels. | Horizontal navigation plus an editorial typography/panel preset. |
-| Resource hub | Styles links as a three-column tile grid and assigns them an order value; otherwise uses two columns. | A link-tile component preset; a true resource-first layout would also need an explicit content-order implementation and verification. |
-| Learning timeline | Uses a 2:1 column ratio and left-accented rows. | Column-ratio option plus a timeline row style; it is not a separate timeline data structure. |
+Run `npm test` for Vitest component tests and `npm run test:e2e` for Playwright browser tests. Install the browser once with `npx playwright install chromium`.
 
-The current controls already provide some customization, including colors, button and navigation styling, list styling, spacing, and shadows. They do **not** yet expose every recommended card, row, ratio, or navigation arrangement as an independent setting. A future consolidation should add those options first, migrate existing saved presets carefully, and then decide whether to retire duplicate names.
+Vite outputs the static site to `dist/`. The site needs an HTTP server; opening `index.html` directly is no longer supported.
 
-## Exporting App.css
+## Cloudflare Pages
 
-The export is intended to turn the chosen design and its settings into a reusable starting point for an application stylesheet. Its structure is inspired by the Tailwind v4 `App.css` in `cpcyd-school`: it includes a Tailwind import, root variables, theme tokens, shared styles, and rules for the selected preview. It is not a replacement for the target application's existing stylesheet or layout-specific imports.
+For a Git-connected Pages project, set the build command to `npm run build` and the build output directory to `dist`. Commit the source, `package.json`, and `package-lock.json`; `dist` and `node_modules` are ignored. Cloudflare builds on deployment. For a manual deployment, build locally and upload the contents of `dist`.
 
-1. Select a layout and adjust the settings.
-2. Select **Disable color scheme** if the exported stylesheet should omit color-related declarations.
-3. Click **Download App.css**.
-4. In a Tailwind CSS v4 project, review the generated tokens and rules, then merge the relevant parts into the application's stylesheet. Preserve any existing imports and project-specific rules.
-5. Adapt selectors and markup to the target application. Preview-specific rules expect the exported layout's `.ui` structure and classes; individual overrides can target specific elements in that structure.
-6. Build the application and test the result across screen sizes, keyboard interaction, and accessibility states.
+## Architecture and migration status
 
-The download contains CSS, not the preview's HTML or application behavior. Fonts named in settings must be available in the target application. Settings stored in one browser are not automatically shared with another.
+- `src/main.jsx` mounts the React application; `src/components/Playground.jsx` renders the page. Gallery selection, the color-scheme toggle, and sample-list styles use React state.
+- `src/components/previews/` contains the 14 layout previews as JSX components. `src/playground.html` contains the current editor shell, which has yet to be converted to JSX.
+- `assets/controllers/` contains the existing DOM-based controllers. The React component initializes the remaining controllers in their original order as a **temporary compatibility layer**. The palette, typography, spacing, component, table, footer, and export controllers still manipulate the DOM and need conversion to React state and components. The migrated layout and list controls send a change event to keep those remaining editors synchronized.
+- `assets/styles/` contains existing CSS, imported in cascade order by `src/styles/main.css`. Tailwind CSS v4 processes this file and supports `@apply` for shared utility-based rules. Existing custom styles remain CSS; Tailwind preflight is intentionally not enabled to avoid changing the previews.
+- `public/` contains the existing template gallery and tutorial, copied unchanged into the build. These pages are not yet React components.
+- `docs/` contains the requirements, observation notes, and [design audit](docs/design-audit.md).
 
-## Files
-
-- `index.html` — playground shell and ordered asset references.
-- `assets/templates/` — one static preview component per named design, inserted synchronously as the page loads so direct `file://` use still works.
-- `assets/controllers/` — gallery, editors, preview, persistence, and export controllers. Their order in `index.html` matters: later controllers depend on earlier setup. Controllers with reusable operations return a named object at the end of their closure; internal helpers and stored state remain private.
-- `assets/styles/` — styles grouped by playground feature and component; the order of the stylesheet links preserves the CSS cascade.
-- `school-design-directions.html` — gallery of the design directions.
-- `tutorial.html` — interactive usage guide.
-- `SRS.md` — software requirements and verification expectations.
+Settings remain in the visitor's browser under the existing local-storage keys and are not shared between browsers. The CSS download is a starting point, not a complete application: review the output and adapt its selectors and markup to the target project. See the design audit for the detailed feature list, export guidance, and recommendations for consolidating similar layouts.

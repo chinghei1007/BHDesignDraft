@@ -1,2 +1,7 @@
 !index.html
 !school-design-directions.html
+node_modules/
+dist/
+.DS_Store
+test-results/
+playwright-report/

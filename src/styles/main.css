@@ -1,0 +1,23 @@
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
+@import "../../assets/styles/base.css";
+@import "../../assets/styles/layout-variants.css";
+@import "../../assets/styles/palettes.css";
+@import "../../assets/styles/palette-editor.css";
+@import "../../assets/styles/settings-panel.css";
+@import "../../assets/styles/lists.css";
+@import "../../assets/styles/automatic-text-colors.css";
+@import "../../assets/styles/heading-colors.css";
+@import "../../assets/styles/button-colors.css";
+@import "../../assets/styles/page-navigation.css";
+@import "../../assets/styles/preview-content.css";
+@import "../../assets/styles/element-editor.css";
+@import "../../assets/styles/component-editor.css";
+@import "../../assets/styles/extra-settings.css";
+@import "../../assets/styles/sample-lists.css";
+@import "../../assets/styles/footer.css";
+@import "../../assets/styles/color-scheme.css";
+@import "../../assets/styles/css-export.css";
+@import "./inline-color-scheme.css";
+
+.page-switch { @apply flex items-center justify-between gap-3; }

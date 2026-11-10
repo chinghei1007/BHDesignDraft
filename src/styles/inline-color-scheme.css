@@ -1,0 +1,5 @@
+
+.color-scheme-toggle{display:inline-flex;align-items:center;gap:8px;font-size:.85rem;font-weight:700;color:#263b35}.color-scheme-toggle input{width:18px;height:18px;margin:0}
+body.colors-disabled .gallery-controls label[for="palette-select"],body.colors-disabled #palette-select,body.colors-disabled .direction .palette,body.colors-disabled #palette-info,body.colors-disabled .text-color-controls,body.colors-disabled .picker-grid,body.colors-disabled .play-tools > button,body.colors-disabled .heading-color-row,body.colors-disabled .heading-color-controls > p:not(.element-description),body.colors-disabled .play-tools > p,body.colors-disabled .button-color-controls > label,body.colors-disabled .button-color-controls > p,body.colors-disabled .component-fields .color-field,body.colors-disabled .list-fields .toggle-color{display:none!important}
+body.colors-disabled .ui[data-component-editor][data-element-editor],body.colors-disabled .ui[data-component-editor][data-element-editor] *{color:inherit!important;background:transparent!important;border-color:currentColor!important;box-shadow:none!important;text-shadow:none!important}
+
