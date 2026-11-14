@@ -22,9 +22,12 @@ Run `npm test` for Vitest component tests and `npm run test:e2e` for Playwright 
 
 Vite outputs the static site to `dist/`. The site needs an HTTP server; opening `index.html` directly is no longer supported.
 
-## Cloudflare Pages
+## Cloudflare deployment
 
-For a Git-connected Pages project, set the build command to `npm run build` and the build output directory to `dist`. Commit the source, `package.json`, and `package-lock.json`; `dist` and `node_modules` are ignored. Cloudflare builds on deployment. For a manual deployment, build locally and upload the contents of `dist`.
+The Git-connected deployment in this repository uses **Workers Builds**, not Pages. In the Cloudflare Worker build settings, set the build command to `npm run build` and the deploy command to `npx wrangler deploy`. The tracked `wrangler.jsonc` directs Wrangler to deploy the static assets in `dist` and enables the single-page application fallback. Cloudflare installs the dependencies and builds the site before deploying; `dist` and `node_modules` should not be committed.
+
+Ensure `src/playground.html` and `public/tutorial.html` are committed along with the rest of the source. The repository `.gitignore` explicitly permits these files even when a global Git configuration ignores `*.html`. For a Cloudflare **Pages** project instead, use `npm run build` as the build command and `dist` as the build output directory.
+
 
 ## Architecture and migration status
 

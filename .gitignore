@@ -5,3 +5,7 @@ dist/
 .DS_Store
 test-results/
 playwright-report/
+
+# Required HTML sources; override global *.html ignore rules.
+!src/playground.html
+!public/tutorial.html
